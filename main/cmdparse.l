@@ -56,6 +56,36 @@ TELNETNOOPT	\xff[\xf1-\xf9]
 		ssize_t len = sockin(buf, max_size); \
 		result = (len > 0) ? len : YY_NULL; \
 	}
+
+	#define IGUARANTEEMYSTRISPURENUMBER	// guaranteed by yylex
+
+	/**
+	 * Convert an ascii representation of a base-10 number to uint.
+	 * @param str null-terminated string to convert
+	 * @return corresponding number
+	 * @note if input cannot fit unsigned int, the value will overflow "gracefully"
+	 */
+	static unsigned int yyscanuint(const char *str)
+	{
+		unsigned int val;
+
+		for (val = 0; *str != '\0'; str++) {
+	#ifndef IGUARANTEEMYSTRISPURENUMBER
+			switch (*str) {
+				case '0': case '1': case '2': case '3': case '4':
+				case '5': case '6': case '7': case '8': case '9':
+					break;
+				default:
+					return 0;
+			}
+	#endif
+			val = (val * 10) + ((*str) - '0');
+		}
+
+		return val;
+	}
+
+
 %}
 
 %%
@@ -77,9 +107,14 @@ help		{ return TOK_V_HELP; }
 console		{ return TOK_V_CONSOLE; }
 exit		|
 quit		{ return TOK_V_QUIT; }
+set		{ return TOK_V_SET; }
 
 	/* adjectives */
 long		{ return TOK_A_LONG; }
+
+	/* others */
+baudrate	{ return TOK_BAUDRATE; }
+[0-9]+		{ yylval.uval=yyscanuint(yytext); return TOK_UVAL; }
 
 [ \t\n]+	/* ignore whitespace */;
 

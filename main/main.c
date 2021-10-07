@@ -13,9 +13,10 @@
  * - Comm (TCP socket port 23)
  * - Parse cmd
  * - Console passthrough
+ * - Runtime baudrate reconfig
  * TODO:
  * - OTA
- * - runtime reconfig (baudrate) / + save in NVS
+ * - save runtime config (baudrate) in NVS
  */
 
 #include "freertos/FreeRTOS.h"

@@ -12,6 +12,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"	// this should pull hal/gpio_types.h and give us gpio_num_t, except it doesn't -> use int
+#include "driver/uart.h"
 
 #include "platform.h"
 
@@ -29,30 +30,53 @@ void gpio_press(uint32_t gpio, bool longpress)
 	gpio_set_level(gpio, 0);
 }
 
+/**
+ * Reverse-fill a buffer with ascii representation of uint and CR/LF.
+ * @param buf target buffer
+ * @param len target buffer size
+ * @param n number to convert
+ * @return offset for start of number in buffer
+ * @warning sizeof(buf) must be >= 2
+ */
+static unsigned int uint2buf(char *buf, size_t len, unsigned int n)
+{
+	buf[--len] = '\n';
+	buf[--len] = '\r';
+
+	for (; len && n; n /= 10)
+		buf[--len] = '0' + (n % 10);
+
+	return len;
+}
+
+
 #define PROMPT	"> "
 
 static const char prompt[] = PROMPT;
 static const char wrongpass[] = "wrong password!\r\n";
 static const char cmdinv[] = "what?\r\n";
 static const char cmdok[] = "ok\r\n";
+static const char cmderr[] = "error!\r\n";
 static const char cmdhelp[] = "[<obj>] [<adj>] <verb>\r\n"
-			"\t<obj>: ledhdd ledpower power reset\r\n"
-			"\t<adj>: long\r\n"
-			"\t<verb>: console get help press quit\r\n";
+			"\t<obj>: baudrate ledhdd ledpower power reset\r\n"
+			"\t<adj>: long <baudrateval>\r\n"
+			"\t<verb>: console get help press quit set\r\n";
 
 %}
 
 %union {
 	int gpio;
+	uint32_t uval;
 }
 
 %verbose
 
 %token TOK_O_POWER TOK_O_RESET
 %token TOK_I_LEDPOWER TOK_I_LEDHDD
-%token TOK_V_PRESS TOK_V_GET TOK_V_HELP TOK_V_CONSOLE TOK_V_QUIT
+%token TOK_V_PRESS TOK_V_GET TOK_V_SET TOK_V_HELP TOK_V_CONSOLE TOK_V_QUIT
 %token TOK_A_LONG
-%token TOK_PASS
+%token TOK_PASS TOK_BAUDRATE
+%token <uval> TOK_UVAL
 
 %type <gpio> i_obj o_obj;
 
@@ -100,6 +124,17 @@ o_obj:
 
 s_cmd:
 	TOK_V_HELP		{ SOCKOUTCC(cmdhelp); }
+	| TOK_BAUDRATE TOK_UVAL TOK_V_SET
+		{
+			uart_set_baudrate(SERIAL_PORT, $2) ? SOCKOUTCC(cmderr) : SOCKOUTCC(cmdok);
+		}
+	| TOK_BAUDRATE TOK_V_GET
+		{
+			uint32_t br; char buf[12];	// 10 digits (uint32_max) + '\r\n'
+			uart_get_baudrate(SERIAL_PORT, &br);
+			br = uint2buf(buf, sizeof(buf), br);
+			sockout(buf+br, sizeof(buf)-br);
+		}
 	| TOK_V_CONSOLE		{ YYABORT; }
 	| TOK_V_QUIT		{ SOCKOUTCC("bye\r\n"); YYACCEPT; }
 ;
