@@ -74,6 +74,7 @@ ledhdd		{ return TOK_I_LEDHDD; }
 press		{ return TOK_V_PRESS; }
 get		{ return TOK_V_GET; }
 help		{ return TOK_V_HELP; }
+console		{ return TOK_V_CONSOLE; }
 exit		|
 quit		{ return TOK_V_QUIT; }
 

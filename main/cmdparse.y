@@ -38,7 +38,7 @@ static const char cmdok[] = "ok\r\n";
 static const char cmdhelp[] = "[<obj>] [<adj>] <verb>\r\n"
 			"\t<obj>: ledhdd ledpower power reset\r\n"
 			"\t<adj>: long\r\n"
-			"\t<verb>: get help press quit\r\n";
+			"\t<verb>: console get help press quit\r\n";
 
 %}
 
@@ -50,7 +50,7 @@ static const char cmdhelp[] = "[<obj>] [<adj>] <verb>\r\n"
 
 %token TOK_O_POWER TOK_O_RESET
 %token TOK_I_LEDPOWER TOK_I_LEDHDD
-%token TOK_V_PRESS TOK_V_GET TOK_V_HELP TOK_V_QUIT
+%token TOK_V_PRESS TOK_V_GET TOK_V_HELP TOK_V_CONSOLE TOK_V_QUIT
 %token TOK_A_LONG
 %token TOK_PASS
 
@@ -61,7 +61,7 @@ start: pass cmds ;
 
 pass:
 	TOK_PASS '\r'		{ telnet_echo(1); SOCKOUTCC("\r\n" PROMPT); }
-	| error '\r'		{ SOCKOUTCC(wrongpass); YYABORT; }
+	| error '\r'		{ SOCKOUTCC(wrongpass); YYACCEPT; }
 ;
 
 cmds:	/* nohting */
@@ -100,7 +100,8 @@ o_obj:
 
 s_cmd:
 	TOK_V_HELP		{ SOCKOUTCC(cmdhelp); }
-	| TOK_V_QUIT		{ SOCKOUTCC("bye\r\n"); YYABORT; }
+	| TOK_V_CONSOLE		{ YYABORT; }
+	| TOK_V_QUIT		{ SOCKOUTCC("bye\r\n"); YYACCEPT; }
 ;
 
 %%

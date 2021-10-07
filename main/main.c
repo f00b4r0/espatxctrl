@@ -12,8 +12,8 @@
  * - Network (ethernet / DHCP)
  * - Comm (TCP socket port 23)
  * - Parse cmd
- * TODO:
  * - Console passthrough
+ * TODO:
  * - OTA
  * - runtime reconfig (baudrate) / + save in NVS
  */
