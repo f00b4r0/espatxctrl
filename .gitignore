@@ -1,0 +1,7 @@
+build/
+sdkconfig
+sdkconfig.old
+*.output
+*.tab.h
+*.tab.c
+*.lex.c
