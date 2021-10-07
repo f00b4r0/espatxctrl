@@ -107,6 +107,7 @@ help		{ return TOK_V_HELP; }
 console		{ return TOK_V_CONSOLE; }
 exit		|
 quit		{ return TOK_V_QUIT; }
+save		{ return TOK_V_SAVE; }
 set		{ return TOK_V_SET; }
 
 	/* adjectives */

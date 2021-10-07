@@ -14,9 +14,9 @@
  * - Parse cmd
  * - Console passthrough
  * - Runtime baudrate reconfig
+ * - Save/restore baudrate config to/from NVS 
  * TODO:
  * - OTA
- * - save runtime config (baudrate) in NVS
  */
 
 #include "freertos/FreeRTOS.h"
@@ -24,10 +24,30 @@
 #include "esp_vfs_dev.h"
 #include "esp_log.h"
 #include "esp_event.h"
+#include "nvs_flash.h"
 #include "driver/gpio.h"
 #include "driver/uart.h"
 
 #include "platform.h"
+
+#define NVSBRKEY	"baudrate"
+
+static nvs_handle_t Gnvsh;
+
+static int nvsgetbr(uint32_t *br)
+{
+	return (nvs_get_u32(Gnvsh, NVSBRKEY, br));
+}
+
+int nvssetbr(uint32_t br)
+{
+	return (nvs_set_u32(Gnvsh, NVSBRKEY, br));
+}
+
+int nvssave(void)
+{
+	return (nvs_commit(Gnvsh));
+}
 
 void server_task(void *pvParameters);
 
@@ -50,6 +70,18 @@ void ethernet_main(void);
 
 void app_main(void)
 {
+	// Initialize NVS
+	esp_err_t err = nvs_flash_init();
+	if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+		// NVS partition was truncated and needs to be erased
+		// Retry nvs_flash_init
+		ESP_ERROR_CHECK(nvs_flash_erase());
+		err = nvs_flash_init();
+	}
+	ESP_ERROR_CHECK(err);
+
+	ESP_ERROR_CHECK(nvs_open("espatxctrl", NVS_READWRITE, &Gnvsh));
+
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
 
 	uart_config_t uart_config = {
@@ -60,6 +92,9 @@ void app_main(void)
 		.flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
 
 	};
+
+	nvsgetbr((uint32_t *)&uart_config.baud_rate);	// doesn't touch baudrate if not found
+
 	ESP_ERROR_CHECK(uart_param_config(SERIAL_PORT, &uart_config));
 	ESP_ERROR_CHECK(uart_set_pin(SERIAL_PORT, SERIAL_TXD, SERIAL_RXD, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 	ESP_ERROR_CHECK(uart_driver_install(SERIAL_PORT, UART_FIFO_LEN*2, UART_FIFO_LEN*2, 0, NULL, 0));

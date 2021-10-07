@@ -20,6 +20,8 @@ int yylex();
 static void yyerror(const char *);
 ssize_t sockout(const void *, size_t);
 void telnet_echo(bool);
+int nvssetbr(uint32_t);
+int nvssave(void);
 
 #define SOCKOUTCC(constchar)	sockout(constchar, sizeof(constchar))
 
@@ -60,7 +62,7 @@ static const char cmderr[] = "error!\r\n";
 static const char cmdhelp[] = "[<obj>] [<adj>] <verb>\r\n"
 			"\t<obj>: baudrate ledhdd ledpower power reset\r\n"
 			"\t<adj>: long <baudrateval>\r\n"
-			"\t<verb>: console get help press quit set\r\n";
+			"\t<verb>: console get help press quit save set\r\n";
 
 %}
 
@@ -73,7 +75,7 @@ static const char cmdhelp[] = "[<obj>] [<adj>] <verb>\r\n"
 
 %token TOK_O_POWER TOK_O_RESET
 %token TOK_I_LEDPOWER TOK_I_LEDHDD
-%token TOK_V_PRESS TOK_V_GET TOK_V_SET TOK_V_HELP TOK_V_CONSOLE TOK_V_QUIT
+%token TOK_V_PRESS TOK_V_GET TOK_V_SET TOK_V_HELP TOK_V_CONSOLE TOK_V_QUIT TOK_V_SAVE
 %token TOK_A_LONG
 %token TOK_PASS TOK_BAUDRATE
 %token <uval> TOK_UVAL
@@ -134,6 +136,12 @@ s_cmd:
 			uart_get_baudrate(SERIAL_PORT, &br);
 			br = uint2buf(buf, sizeof(buf), br);
 			sockout(buf+br, sizeof(buf)-br);
+		}
+	| TOK_BAUDRATE TOK_V_SAVE
+		{
+			uint32_t br;
+			uart_get_baudrate(SERIAL_PORT, &br);
+			(!nvssetbr(br) && !nvssave()) ? SOCKOUTCC(cmdok) : SOCKOUTCC(cmderr);
 		}
 	| TOK_V_CONSOLE		{ YYABORT; }
 	| TOK_V_QUIT		{ SOCKOUTCC("bye\r\n"); YYACCEPT; }
