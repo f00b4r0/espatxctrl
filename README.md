@@ -25,6 +25,7 @@ See LICENSE.md for details
 The software implements a simple telnet interface accessible on standard port 23:
 - Asks for (cleartext) password (to prevent accidental access) 
 - Offers a set of commands for toggling/reading GPIO connected to **ATXctrl** (type `help` for details)
+- Allows setting console baudrate and saving it to non-volatile storage
 - Provides full serial console passthrough over telnet session (command `console`)
 
 ## Building
