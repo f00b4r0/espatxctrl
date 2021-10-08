@@ -22,6 +22,7 @@ ssize_t sockout(const void *, size_t);
 void telnet_echo(bool);
 int nvssetbr(uint32_t);
 int nvssave(void);
+void want_console(void);
 
 #define SOCKOUTCC(constchar)	sockout(constchar, sizeof(constchar))
 
@@ -87,7 +88,7 @@ start: pass cmds ;
 
 pass:
 	TOK_PASS '\r'		{ telnet_echo(1); SOCKOUTCC("\r\n" PROMPT); }
-	| error '\r'		{ SOCKOUTCC(wrongpass); YYACCEPT; }
+	| error '\r'		{ SOCKOUTCC(wrongpass); YYABORT; }
 ;
 
 cmds:	/* nohting */
@@ -144,7 +145,7 @@ s_cmd:
 			uart_get_baudrate(SERIAL_PORT, &br);
 			(!nvssetbr(br) && !nvssave()) ? SOCKOUTCC(cmdok) : SOCKOUTCC(cmderr);
 		}
-	| TOK_V_CONSOLE		{ YYABORT; }
+	| TOK_V_CONSOLE		{ want_console(); YYACCEPT; }
 	| TOK_V_QUIT		{ SOCKOUTCC("bye\r\n"); YYACCEPT; }
 ;
 

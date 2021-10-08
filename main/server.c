@@ -27,6 +27,7 @@ static const char *TAG = "server";
 
 static int Gsock;
 static bool Gwillecho;
+static bool Gwantcons;
 
 ssize_t sockin(void *buf, size_t len)
 {
@@ -36,6 +37,11 @@ ssize_t sockin(void *buf, size_t len)
 ssize_t sockout(const void *buf, size_t len)
 {
 	return (send(Gsock, buf, len, 0));
+}
+
+void want_console(void)
+{
+	Gwantcons = true;
 }
 
 /**
@@ -233,13 +239,15 @@ void server_task(void *pvParameters)
 			continue;
 		}
 
+		Gwantcons = false;
+
 		telnet_echo(false);
 		sockout("pass? ", 6);
 
-		ret = yyparse();	// YYABORT: -1 starts console, YYACCEPT: 0 quits normally
+		ret = yyparse();
 		yylex_destroy();
 
-		if (ret) {
+		if (!ret && Gwantcons) {
 			ESP_LOGI(TAG, "Starting console");
 			if (telnet_setvt())
 				ESP_LOGE(TAG, "VT setup failed");
