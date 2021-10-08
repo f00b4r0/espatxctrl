@@ -23,6 +23,10 @@
 
 #include "platform.h"
 
+#define KEEPALIVE_IDLE              5	// delay (s) before starting sending keepalives
+#define KEEPALIVE_INTERVAL          5	// keepalive probes period (s)
+#define KEEPALIVE_COUNT             3	// max unanswered before timeout
+
 static const char *TAG = "server";
 
 static int Gsock;
@@ -238,6 +242,16 @@ void server_task(void *pvParameters)
 			ESP_LOGE(TAG, "accept(): %d", errno);
 			continue;
 		}
+
+		// make sure unclean client shutdown won't DoS us
+		if (setsockopt(Gsock, SOL_SOCKET, SO_KEEPALIVE, &(int){ 1 }, sizeof(int))) {
+			ESP_LOGE(TAG, "SO_KEEPALIVE: %d", errno);
+			goto out;
+		}
+		// assume cannot fail if the above succeeds
+		setsockopt(Gsock, IPPROTO_TCP, TCP_KEEPIDLE, &(int){ KEEPALIVE_IDLE }, sizeof(int));
+		setsockopt(Gsock, IPPROTO_TCP, TCP_KEEPINTVL, &(int){ KEEPALIVE_INTERVAL }, sizeof(int));
+		setsockopt(Gsock, IPPROTO_TCP, TCP_KEEPCNT, &(int){ KEEPALIVE_COUNT }, sizeof(int));
 
 		Gwantcons = false;
 
