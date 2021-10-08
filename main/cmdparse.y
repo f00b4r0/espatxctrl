@@ -91,6 +91,7 @@ pass:
 ;
 
 cmds:	/* nohting */
+	| cmds '\004'		{ /* Ctrl-D */ YYACCEPT; }
 	| cmds cmd ';'
 	| cmds cmd '\r'		{ SOCKOUTCC(prompt); }
 	| error '\r'		{ SOCKOUTCC(cmdinv); SOCKOUTCC(prompt); yyerrok; }	/* stop processing until newline if we have an error */
