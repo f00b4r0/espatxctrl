@@ -25,7 +25,7 @@ int nvssave(void);
 
 #define SOCKOUTCC(constchar)	sockout(constchar, sizeof(constchar))
 
-void gpio_press(uint32_t gpio, bool longpress)
+static void gpio_press(uint32_t gpio, bool longpress)
 {
 	gpio_set_level(gpio, 1);
 	vTaskDelay((longpress ? 5000 : 500) / portTICK_RATE_MS);
