@@ -148,7 +148,7 @@ static void start_console(void)
 
 	uart = open("/dev/uart/" XSTR(SERIAL_PORT), O_RDWR|O_NONBLOCK);	// breaks without O_NONBLOCK - see note at the end
 	if (uart < 0) {
-		ESP_LOGE(TAG, "Unable to open serial port: errno %d", errno);
+		ESP_LOGE(TAG, "Unable to open serial port: %s", strerror(errno));
 		return;
 	}
 
@@ -162,7 +162,7 @@ static void start_console(void)
 	do {
 		ret = poll(fds, nfds, 1000*60);	// 60s inactivity timeout
 		if (ret == -1) {
-			ESP_LOGE(TAG, "poll failed: errno %d", errno);
+			ESP_LOGE(TAG, "poll failed: %s", strerror(errno));
 			break;
 		}
 		else if (ret == 0)	// timeout
@@ -212,23 +212,23 @@ void server_task(void *pvParameters)
 	while (1) {
 		lsock = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
 		if (lsock < 0) {
-			ESP_LOGE(TAG, "socket(): %d", errno);
+			ESP_LOGE(TAG, "socket(): %s", strerror(errno));
 			vTaskDelete(NULL);
 			return;
 		}
 
 		if (setsockopt(lsock, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int))) {
-			ESP_LOGE(TAG, "SO_REUSEADDR: %d", errno);
+			ESP_LOGE(TAG, "SO_REUSEADDR: %s", strerror(errno));
 			goto out;
 		}
 
 		if (bind(lsock, (struct sockaddr *)&dest_addr, sizeof(dest_addr))) {
-			ESP_LOGE(TAG, "bind(): %d", errno);
+			ESP_LOGE(TAG, "bind(): %s", strerror(errno));
 			goto out;
 		}
 
 		if (listen(lsock, 1)) {
-			ESP_LOGE(TAG, "listen(): %d", errno);
+			ESP_LOGE(TAG, "listen(): %s", strerror(errno));
 			goto out;
 		}
 
