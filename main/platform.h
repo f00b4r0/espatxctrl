@@ -15,6 +15,8 @@
 
 #define DEBUG
 
+#define OTA_PORT	8888
+
 #define TCP_PORT	23
 #define SERIAL_BAUDRATE 115200
 #define SERIAL_PORT	2	/* TXD2 RXD2 */

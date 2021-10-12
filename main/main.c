@@ -15,7 +15,6 @@
  * - Console passthrough
  * - Runtime baudrate reconfig
  * - Save/restore baudrate config to/from NVS 
- * TODO:
  * - OTA
  */
 

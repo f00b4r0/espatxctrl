@@ -114,6 +114,7 @@ set		{ return TOK_V_SET; }
 long		{ return TOK_A_LONG; }
 
 	/* others */
+firmware	{ return TOK_FIRMWARE; }
 baudrate	{ return TOK_BAUDRATE; }
 [0-9]+		{ yylval.uval=yyscanuint(yytext); return TOK_UVAL; }
 

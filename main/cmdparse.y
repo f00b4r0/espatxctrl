@@ -23,6 +23,7 @@ void telnet_echo(bool);
 int nvssetbr(uint32_t);
 int nvssave(void);
 void want_console(void);
+void want_ota(void);
 
 #define SOCKOUTCC(constchar)	sockout(constchar, sizeof(constchar))
 
@@ -61,7 +62,7 @@ static const char cmdinv[] = "what?\r\n";
 static const char cmdok[] = "ok\r\n";
 static const char cmderr[] = "error!\r\n";
 static const char cmdhelp[] = "[<obj>] [<adj>] <verb>\r\n"
-			"\t<obj>: baudrate ledhdd ledpower power reset\r\n"
+			"\t<obj>: baudrate firmware ledhdd ledpower power reset\r\n"
 			"\t<adj>: long <baudrateval>\r\n"
 			"\t<verb>: console get help press quit save set\r\n";
 
@@ -78,7 +79,7 @@ static const char cmdhelp[] = "[<obj>] [<adj>] <verb>\r\n"
 %token TOK_I_LEDPOWER TOK_I_LEDHDD
 %token TOK_V_PRESS TOK_V_GET TOK_V_SET TOK_V_HELP TOK_V_CONSOLE TOK_V_QUIT TOK_V_SAVE
 %token TOK_A_LONG
-%token TOK_PASS TOK_BAUDRATE
+%token TOK_PASS TOK_BAUDRATE TOK_FIRMWARE
 %token <uval> TOK_UVAL
 
 %type <gpio> i_obj o_obj;
@@ -144,6 +145,13 @@ s_cmd:
 			uint32_t br;
 			uart_get_baudrate(SERIAL_PORT, &br);
 			(!nvssetbr(br) && !nvssave()) ? SOCKOUTCC(cmdok) : SOCKOUTCC(cmderr);
+		}
+	| TOK_FIRMWARE TOK_V_SET
+		{
+			want_ota();
+			SOCKOUTCC("OTA update port " XSTR(OTA_PORT) "\r\n");
+			YYACCEPT;
+
 		}
 	| TOK_V_CONSOLE		{ want_console(); YYACCEPT; }
 	| TOK_V_QUIT		{ SOCKOUTCC("bye\r\n"); YYACCEPT; }

@@ -31,7 +31,7 @@ static const char *TAG = "server";
 
 static int Gsock;
 static bool Gwillecho;
-static bool Gwantcons;
+static bool Gwantcons, Gwantota;
 
 ssize_t sockin(void *buf, size_t len)
 {
@@ -46,6 +46,11 @@ ssize_t sockout(const void *buf, size_t len)
 void want_console(void)
 {
 	Gwantcons = true;
+}
+
+void want_ota(void)
+{
+	Gwantota = true;
 }
 
 /**
@@ -195,6 +200,8 @@ out:
 	close(uart);	// Gsock is handled by caller
 }
 
+esp_err_t pushota(void);
+
 int yylex_destroy(void);
 int yyparse(void);
 
@@ -253,7 +260,7 @@ void server_task(void *pvParameters)
 		setsockopt(Gsock, IPPROTO_TCP, TCP_KEEPINTVL, &(int){ KEEPALIVE_INTERVAL }, sizeof(int));
 		setsockopt(Gsock, IPPROTO_TCP, TCP_KEEPCNT, &(int){ KEEPALIVE_COUNT }, sizeof(int));
 
-		Gwantcons = false;
+		Gwantota = Gwantcons = false;
 
 		telnet_echo(false);
 		sockout("pass? ", 6);
@@ -271,6 +278,12 @@ void server_task(void *pvParameters)
 
 		shutdown(Gsock, SHUT_RD);
 		close(Gsock);
+
+		if (!ret && Gwantota) {
+			ESP_LOGI(TAG, "Starting OTA");
+			pushota();
+		}
+
 	}
 
 out:

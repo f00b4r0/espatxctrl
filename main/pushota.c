@@ -32,7 +32,8 @@
 #include "lwip/sys.h"
 #include "lwip/netdb.h"
 
-#define OTA_PORT		8888
+#include "platform.h"
+
 #define OTA_BUFSIZE		1024
 
 #define KEEPALIVE_IDLE		5	// delay (s) before starting sending keepalives
