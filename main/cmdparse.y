@@ -8,11 +8,13 @@
 
 %{
 #include <stdbool.h>
+#include <string.h>	// strlen()
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"	// this should pull hal/gpio_types.h and give us gpio_num_t, except it doesn't -> use int
 #include "driver/uart.h"
+#include "esp_ota_ops.h"
 
 #include "platform.h"
 
@@ -152,6 +154,12 @@ s_cmd:
 			SOCKOUTCC("OTA update port " XSTR(OTA_PORT) "\r\n");
 			YYACCEPT;
 
+		}
+	| TOK_FIRMWARE TOK_V_GET
+		{
+			const char *v = esp_ota_get_app_description()->version;
+			sockout(v, strlen(v));
+			SOCKOUTCC("\r\n");
 		}
 	| TOK_V_CONSOLE		{ want_console(); YYACCEPT; }
 	| TOK_V_QUIT		{ SOCKOUTCC("bye\r\n"); YYACCEPT; }
