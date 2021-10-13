@@ -161,6 +161,7 @@ s_cmd:
 			sockout(v, strlen(v));
 			SOCKOUTCC("\r\n");
 		}
+	| TOK_FIRMWARE TOK_V_SAVE { esp_ota_mark_app_valid_cancel_rollback() ? SOCKOUTCC(cmderr) : SOCKOUTCC(cmdok); }
 	| TOK_V_CONSOLE		{ want_console(); YYACCEPT; }
 	| TOK_V_QUIT		{ SOCKOUTCC("bye\r\n"); YYACCEPT; }
 ;
