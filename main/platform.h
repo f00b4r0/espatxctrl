@@ -13,12 +13,15 @@
 #ifndef platform_h
 #define platform_h
 
-#define DEBUG
+#undef DEBUG
 
 #define OTA_PORT	8888
-
 #define TCP_PORT	23
 #define SERIAL_BAUDRATE 115200
+
+
+// the remainder of this file defines WT32-ETH01 specific constants and should not need modification
+
 #define SERIAL_PORT	2	/* TXD2 RXD2 */
 #define SERIAL_TXD	17
 #define SERIAL_RXD	5

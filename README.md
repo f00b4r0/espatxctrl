@@ -19,20 +19,41 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 
 See LICENSE.md for details
 
-
 ## Features
 
 The software implements a simple telnet interface accessible on standard port 23:
 - Asks for (cleartext) password (to prevent accidental access) 
-- Offers a set of commands for toggling/reading GPIO connected to **ATXctrl** (type `help` for details)
+- Offers a set of commands for toggling/reading GPIO connected to **ATXctrl**
 - Allows setting console baudrate and saving it to non-volatile storage
-- Provides full serial console passthrough over telnet session (command `console`)
+- Provides full serial console passthrough over telnet session
+- Provides a basic push OTA firmware update system, rollback-compatible
+
+### Full list of commands:
+
+```
+baudrate <value> set
+baudrate get
+firmware {get|set|save}
+{ledhdd|ledpower} get
+{power|reset} [long] press
+console
+help
+quit
+```
+
+Commands are self-explanatory, possibly needing explanation: `firmware set` triggers the push OTA update system,
+`firmware save` marks the newly booted firmware as valid and prevents rollback.
+
+To push a new firmware to the device once the push OTA system is started, use e.g.:
+
+`curl <esphost>:OTA_PORT --data-binary @build/project.bin`
 
 ## Building
 
 ### Configure the project
 
-Possibly adjust the default "password" string ("admin") in `main/cmdparse.l` (look for `/* password */`), then run:
+Possibly adjust the default "password" string ("admin") in `main/cmdparse.l` (look for `/* password */`),
+and confirm that the ports and baudrate defined in `platform.h` suits you, then run:
 
 `idf.py reconfigure`
 

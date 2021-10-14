@@ -112,7 +112,7 @@ static int telnet_setvt(void)
 	sockout((unsigned char[]){ 255, 251, 03 }, 3);
 	len = sockin(buf, 3);
 	if (len < 3 || buf[1] != 253) {	// make sure other end will
-		ESP_LOGE(TAG, "WONT GA");
+		ESP_LOGE(TAG, "DONT GA");
 		return -1;
 	}
 
