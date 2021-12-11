@@ -6,6 +6,11 @@
 //  License: GPLv2 - http://www.gnu.org/licenses/gpl-2.0.html
 //
 
+/**
+ * @file minimalistic telnet-compatible server.
+ * Provides support for several commands, as well as passthrough serial console.
+ */
+
 #include <string.h>
 #include <sys/param.h>
 #include <sys/poll.h>
