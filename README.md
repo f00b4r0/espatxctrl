@@ -27,13 +27,13 @@ The software implements a simple telnet interface accessible on standard port 23
 - Offers a set of commands for toggling/reading GPIO connected to **ATXctrl**
 - Allows setting console baudrate and saving it to non-volatile storage
 - Provides full serial console passthrough over telnet session
-- Provides a basic push OTA firmware update system, rollback-compatible
+- Provides a basic push OTA firmware update system, rollback-compatible, through [simple_pushota](http://vcs.slashdirt.org/git/sw/ESP/simple_pushota.git)
 
 ### Full list of commands:
 
 ```
 baudrate <value> set
-baudrate get
+baudrate {get|save}
 firmware {get|set|save}
 {ledhdd|ledpower} get
 {power|reset} [long] press
@@ -47,7 +47,7 @@ Commands are self-explanatory, possibly needing explanation: `firmware set` trig
 
 To push a new firmware to the device once the push OTA system is started, use e.g.:
 
-`curl <esphost>:OTA_PORT --data-binary @build/project.bin`
+`curl <esphost>:<OTA_PORT> --data-binary @build/espatxctrl.bin`
 
 ## Building
 

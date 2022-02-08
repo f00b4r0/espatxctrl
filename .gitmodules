@@ -1,0 +1,3 @@
+[submodule "components/simple_pushota"]
+	path = components/simple_pushota
+	url = http://vcs.slashdirt.org/git/sw/ESP/simple_pushota.git

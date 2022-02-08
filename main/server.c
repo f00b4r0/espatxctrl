@@ -26,6 +26,8 @@
 #include "lwip/sys.h"
 #include "lwip/netdb.h"
 
+#include "simple_pushota.h"
+
 #include "platform.h"
 
 #define KEEPALIVE_IDLE              5	// delay (s) before starting sending keepalives
@@ -205,8 +207,6 @@ out:
 	close(uart);	// Gsock is handled by caller
 }
 
-esp_err_t pushota(void);
-
 int yylex_destroy(void);
 int yyparse(void);
 
@@ -286,7 +286,9 @@ void server_task(void *pvParameters)
 
 		if (!ret && Gwantota) {
 			ESP_LOGI(TAG, "Starting OTA");
-			pushota();
+			ret = pushota(NULL);
+			if (!ret)
+				esp_restart();
 		}
 
 	}
