@@ -52,7 +52,7 @@ int nvssave(void)
 
 void server_task(void *pvParameters);
 
-#ifdef HAS_LEDHB
+#ifdef LED_GPIO
 static void ledhb_task(void *pvParameter)
 {
 	uint32_t level = 0;
@@ -123,7 +123,7 @@ void app_main(void)
 	io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
 	ESP_ERROR_CHECK(gpio_config(&io_conf));
 
-#ifdef HAS_LEDHB
+#ifdef LED_GPIO
 	xTaskCreate(ledhb_task, "lhb", 512, NULL, 1, NULL);
 #endif
 	xTaskCreate(server_task, "server", 4096, NULL, 5, NULL);

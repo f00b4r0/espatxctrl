@@ -2,7 +2,8 @@
 
 Host control software for [ATXctrl](http://hacks.slashdirt.org/hw/atxctrl/), ESP-idf implementation.
 
-Supports the [WT32-ETH01](http://www.wireless-tag.com/portfolio/wt32-eth01/) ESP32 module.
+Supports the [WT32-ETH01](http://www.wireless-tag.com/portfolio/wt32-eth01/) ESP32 module by default,
+should work fine with any ESP32 module.
 
 ## License
 

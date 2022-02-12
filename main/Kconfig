@@ -1,0 +1,54 @@
+menu "espatxctrl"
+
+# defaults for WT32-ETH01
+
+config ESPATXCTRL_CONSOLE_UART_NUM
+    int "Serial console UART"
+    default 2
+    help
+        UART peripheral to use for console passthrough
+
+config ESPATXCTRL_CONSOLE_UART_BAUDRATE
+    int "Serial console baudrate"
+    default 115200
+
+config ESPATXCTRL_CONSOLE_UART_TXD
+    int "UART TXD pin"
+    default 17
+
+config ESPATXCTRL_CONSOLE_UART_RXD
+    int "UART RXD pin"
+    default 5
+
+config ESPATXCTRL_LISTEN_PORT
+    int "TCP listen port"
+    default 23
+
+config ESPATXCTRL_GPIO_OUT_POWER
+    int "Power control output GPIO"
+    default 32
+
+config ESPATXCTRL_GPIO_OUT_RESET
+    int "Reset control output GPIO"
+    default 33
+
+config ESPATXCTRL_GPIO_IN_LEDPOWER
+    int "Power LED input GPIO"
+    default 4
+
+config ESPATXCTRL_GPIO_IN_LEDHDD
+    int "HDD LED input GPIO"
+    default 14
+
+config ESPATXCTRL_HAS_LEDHB
+    bool "Use hearbeat LED"
+    default n
+
+config ESPATXCTRL_LEDHD_GPIO
+    int "Heartbeat LED GPIO"
+    depends on ESPATXCTRL_HAS_LEDHB
+    default 2
+
+endmenu
+
+
