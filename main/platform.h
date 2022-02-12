@@ -43,11 +43,6 @@
  Ethernet Clock: External crystal oscillator
  */
 
-#define ETH_PHY_RST_GPIO	16
-#define ETH_PHY_ADDR		1
-#define ETH_MDC_GPIO		23
-#define ETH_MDIO_GPIO		18
-
 /*
  ESP32-ETH01 available IO:
   - 32 (CFG), 33 (485_EN)

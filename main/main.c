@@ -27,6 +27,8 @@
 #include "driver/gpio.h"
 #include "driver/uart.h"
 
+#include "simple_network.h"
+
 #include "platform.h"
 
 #define NVSBRKEY	"baudrate"
@@ -104,7 +106,7 @@ void app_main(void)
 	esp_vfs_dev_uart_port_set_rx_line_endings(SERIAL_PORT, ESP_LINE_ENDINGS_LF);
 	esp_vfs_dev_uart_port_set_tx_line_endings(SERIAL_PORT, ESP_LINE_ENDINGS_LF);
 
-	ethernet_main();
+	simple_network_start();
 
 	gpio_config_t io_conf;
 	io_conf.intr_type = GPIO_PIN_INTR_DISABLE;

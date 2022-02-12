@@ -21,7 +21,8 @@ See LICENSE.md for details
 
 ## Features
 
-The software implements a simple telnet interface accessible on standard port 23:
+The software implements a simple telnet interface accessible on standard port 23
+(basic networking implemented through [simple_network](http://vcs.slashdirt.org/git/sw/ESP/simple_network.git)):
 
 - Asks for (cleartext) password (to prevent accidental access) 
 - Offers a set of commands for toggling/reading GPIO connected to **ATXctrl**
