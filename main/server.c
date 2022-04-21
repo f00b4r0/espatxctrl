@@ -172,7 +172,7 @@ static void start_console(void)
 	fds[1].events = POLLIN;
 
 	do {
-		ret = poll(fds, nfds, 1000*60);	// 60s inactivity timeout
+		ret = poll(fds, nfds, 1000*120);	// 120s inactivity timeout
 		if (ret == -1) {
 			ESP_LOGE(TAG, "poll failed: %s", strerror(errno));
 			break;
