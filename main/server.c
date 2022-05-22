@@ -2,7 +2,7 @@
 //  server.c
 //
 //
-//  (C) 2021 Thibaut VARENE
+//  (C) 2021-2022 Thibaut VARENE
 //  License: GPLv2 - http://www.gnu.org/licenses/gpl-2.0.html
 //
 
@@ -97,12 +97,9 @@ void yytelnet(char *buf)
 void telnet_echo(bool en)
 {
 	char buf[3] = { 0xFF, 0xFB, 0x01 };	// (server) WILL ECHO
-	if (en) {
-		Gwillecho = false;
+	if (en)
 		buf[1] = 0xFC;			// (server) WONT ECHO
-	}
-	else
-		Gwillecho = true;
+	Gwillecho = !en;
 	sockout(buf, sizeof(buf));
 }
 

@@ -9,7 +9,7 @@ should work fine with any ESP32 module.
 
 GPLv2-only - http://www.gnu.org/licenses/gpl-2.0.html
 
-Copyright: (C) 2021 Thibaut VARÈNE
+Copyright: (C) 2021-2022 Thibaut VARÈNE
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 2,
