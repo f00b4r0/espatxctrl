@@ -162,6 +162,7 @@ s_cmd:
 			SOCKOUTCC("\r\n");
 		}
 	| TOK_FIRMWARE TOK_V_SAVE { esp_ota_mark_app_valid_cancel_rollback() ? SOCKOUTCC(cmderr) : SOCKOUTCC(cmdok); }
+	| TOK_FIRMWARE TOK_V_QUIT { esp_ota_mark_app_invalid_rollback_and_reboot() ? SOCKOUTCC(cmderr) : SOCKOUTCC(cmdok); }
 	| TOK_V_CONSOLE		{ want_console(); YYACCEPT; }
 	| TOK_V_QUIT		{ SOCKOUTCC("bye\r\n"); YYACCEPT; }
 ;

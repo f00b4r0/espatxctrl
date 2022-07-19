@@ -36,7 +36,7 @@ The software implements a simple telnet interface accessible on standard port 23
 ```
 baudrate <value> set
 baudrate {get|save}
-firmware {get|set|save}
+firmware {get|set|save|quit}
 {ledhdd|ledpower} get
 {power|reset} [long] press
 console
@@ -45,7 +45,7 @@ quit
 ```
 
 Commands are self-explanatory, possibly needing explanation: `firmware set` triggers the push OTA update system,
-`firmware save` marks the newly booted firmware as valid and prevents rollback.
+`firmware save` marks the newly booted firmware as valid and prevents rollback, `firwmare quit` requests rollback and reboots.
 
 To push a new firmware to the device once the push OTA system is started, use e.g.:
 
