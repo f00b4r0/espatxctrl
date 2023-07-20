@@ -157,7 +157,7 @@ s_cmd:
 		}
 	| TOK_FIRMWARE TOK_V_GET
 		{
-			const char *v = esp_ota_get_app_description()->version;
+			const char *v = esp_app_get_description()->version;
 			sockout(v, strlen(v));
 			SOCKOUTCC("\r\n");
 		}
