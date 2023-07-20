@@ -32,7 +32,7 @@ void want_ota(void);
 static void gpio_press(uint32_t gpio, bool longpress)
 {
 	gpio_set_level(gpio, 1);
-	vTaskDelay((longpress ? 5000 : 500) / portTICK_RATE_MS);
+	vTaskDelay((longpress ? 5000 : 500) / portTICK_PERIOD_MS);
 	gpio_set_level(gpio, 0);
 }
 

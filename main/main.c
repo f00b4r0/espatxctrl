@@ -62,7 +62,7 @@ static void ledhb_task(void *pvParameter)
 	while (1) {
 		gpio_set_level(LED_GPIO, level);
 		level = !level;
-		vTaskDelay(1000 / portTICK_RATE_MS);
+		vTaskDelay(1000 / portTICK_PERIOD_MS);
 	}
 }
 #endif
