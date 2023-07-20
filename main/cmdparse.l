@@ -30,8 +30,8 @@
  to find them. See option-always-interactive. See option-read. */
 %option nounistd
 
-/* batch means that we'll never use the generated lexer interactively. */
-%option batch
+/* always-interactive means we'll always use the generated lexer interactively. */
+%option always-interactive
 
 /* Enables debug mode. To see the debug messages, one needs to also set
  yy_flex_debug to 1, then the debug messages will be printed on stderr. */
