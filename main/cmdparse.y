@@ -151,7 +151,7 @@ s_cmd:
 	| TOK_FIRMWARE TOK_V_SET
 		{
 			want_ota();
-			SOCKOUTCC("OTA update port " XSTR(OTA_PORT) "\r\n");
+			SOCKOUTCC("OTA update port " XSTR(CONFIG_SIMPLE_PUSHOTA_PORT) "\r\n");
 			YYACCEPT;
 
 		}
